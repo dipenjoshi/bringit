@@ -1,7 +1,9 @@
 package com.sourcey.materiallogindemo;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -12,14 +14,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourcey.materiallogindemo.models.SignInForm;
+import com.sourcey.materiallogindemo.models.User;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    @Bind(R.id.input_email) EditText _emailText;
+    @Bind(R.id.input_username) EditText _usernameText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.link_signup) TextView _signupLink;
@@ -55,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         if (!validate()) {
-            onLoginFailed();
+            onLoginFailed("null");
             return;
         }
 
@@ -67,20 +77,50 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        // ------------------
+        SignInForm form = new SignInForm();
+        form.setUsername(_usernameText.getText().toString());
+        form.setPassword(_passwordText.getText().toString());
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.1.214:3000/").addConverterFactory(GsonConverterFactory.create()).build();
+        BringItApiInterface apiService = retrofit.create(BringItApiInterface.class);
+        Call<User> call = apiService.signIn(form);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.code() == 200){
+                    onLoginSuccess();
+                } else {
+                    String reason = response.body().getMessage();
+                    progressDialog.dismiss();
+                    onLoginFailed(reason);
+                }
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable throwable) {
+                Log.v("asdf",throwable.toString());
+                String reason = null;
+                progressDialog.dismiss();
+                onLoginFailed(reason);
+
+            }
+        });
+
+        // ------------------
+
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onLoginSuccess or onLoginFailed
+//
+//                        //
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 
@@ -107,8 +147,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+    public void onLoginFailed(String reason) {
+
+        Toast.makeText(getBaseContext(), "Login Failed: " + reason, Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -116,18 +157,18 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+        if (username.isEmpty() || username.length() < 4 || username.length() > 20) {
+            _usernameText.setError("between 4 and 20 alphanumeric characters");
             valid = false;
         } else {
-            _emailText.setError(null);
+            _usernameText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 20) {
+            _passwordText.setError("between 4 and 20 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
