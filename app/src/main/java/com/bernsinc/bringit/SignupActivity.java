@@ -17,14 +17,14 @@ import butterknife.ButterKnife;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    @Bind(R.id.input_name)
-    EditText _nameText;
-    @Bind(R.id.input_address)
-    EditText _addressText;
+    @Bind(R.id.input_first_name)
+    EditText _firstnameText;
+    @Bind(R.id.input_last_name)
+    EditText _lastnameText;
     @Bind(R.id.input_email)
     EditText _emailText;
-    @Bind(R.id.input_mobile)
-    EditText _mobileText;
+    @Bind(R.id.input_username)
+    EditText _usernameText;
     @Bind(R.id.input_password)
     EditText _passwordText;
     @Bind(R.id.input_reEnterPassword)
@@ -75,25 +75,29 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String firstname = _firstnameText.getText().toString();
+        String lastname = _lastnameText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        // ----------------------------------------
+
+        // ----------------------------------------
+
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onSignupSuccess or onSignupFailed
+//                        // depending on success
+//                        onSignupSuccess();
+//                        // onSignupFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 
@@ -112,25 +116,25 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String firstname = _firstnameText.getText().toString();
+        String lastname = _lastnameText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+        if (firstname.isEmpty() || firstname.length() < 3) {
+            _firstnameText.setError("at least 3 characters");
             valid = false;
         } else {
-            _nameText.setError(null);
+            _firstnameText.setError(null);
         }
 
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
+        if (lastname.isEmpty() || lastname.length() < 3) {
+            _lastnameText.setError("at least 3 characters");
             valid = false;
         } else {
-            _addressText.setError(null);
+            _lastnameText.setError(null);
         }
 
 
@@ -141,11 +145,11 @@ public class SignupActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (mobile.isEmpty() || mobile.length() != 10) {
-            _mobileText.setError("Enter Valid Mobile Number");
+        if (username.isEmpty() || username.length() > 4) {
+            _usernameText.setError("at least 4 characters");
             valid = false;
         } else {
-            _mobileText.setError(null);
+            _usernameText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 1 || password.length() > 20) {

@@ -12,4 +12,7 @@ public interface BringItApiInterface {
     @POST("api/auth/signin")
     Call<User> signIn(@Body SignInForm form);
 
+    @POST("api/auth/signup")
+    Call<>
+
 }
