@@ -11,16 +11,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourcey.materiallogindemo.models.SignInForm;
+import com.sourcey.materiallogindemo.models.SignUpForm;
+import com.sourcey.materiallogindemo.models.User;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    @Bind(R.id.input_name) EditText _nameText;
-    @Bind(R.id.input_address) EditText _addressText;
+    @Bind(R.id.input_firstName) EditText _firstNameText;
+    @Bind(R.id.input_lastName) EditText _lastNameText;
     @Bind(R.id.input_email) EditText _emailText;
-    @Bind(R.id.input_mobile) EditText _mobileText;
+    @Bind(R.id.input_username) EditText _usernameText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.input_reEnterPassword) EditText _reEnterPasswordText;
     @Bind(R.id.btn_signup) Button _signupButton;
@@ -55,7 +64,7 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed(null);
             return;
         }
 
@@ -67,25 +76,55 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String firstName = _firstNameText.getText().toString();
+        String lastName = _lastNameText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
+        String mobile = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
+        SignUpForm form = new SignUpForm();
+        form.setUsername(_usernameText.getText().toString());
+        form.setPassword(_passwordText.getText().toString());
+        form.setEmail(_emailText.getText().toString());
+        form.setFirstName(_firstNameText.getText().toString());
+        form.setLastName(_lastNameText.getText().toString());
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.1.43:3000/").addConverterFactory(GsonConverterFactory.create()).build();
+        BringItApiInterface apiService = retrofit.create(BringItApiInterface.class);
+        Call<User> call = apiService.signUp(form);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.code() == 200){
+                    onSignupSuccess();
+                } else {
+                    String reason = response.body().getMessage();
+                    progressDialog.dismiss();
+                    onSignupFailed(reason);
+                }
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable throwable) {
+                Log.v("asdf",throwable.toString());
+                String reason = null;
+                progressDialog.dismiss();
+                onSignupFailed(reason);
+
+            }
+        });
+
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onSignupSuccess or onSignupFailed
+//                        // depending on success
+//                        onSignupSuccess();
+//                        // onSignupFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 
@@ -95,8 +134,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+    public void onSignupFailed(String reason) {
+        Toast.makeText(getBaseContext(), "Login Failed: " + reason, Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -104,25 +143,25 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String firstName = _firstNameText.getText().toString();
+        String lastName = _lastNameText.getText().toString();
         String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+        if (firstName.isEmpty() || firstName.length() < 3) {
+            _firstNameText.setError("at least 3 characters");
             valid = false;
         } else {
-            _nameText.setError(null);
+            _firstNameText.setError(null);
         }
 
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
+        if (lastName.isEmpty()) {
+            _lastNameText.setError("Enter Valid Address");
             valid = false;
         } else {
-            _addressText.setError(null);
+            _lastNameText.setError(null);
         }
 
 
@@ -133,11 +172,11 @@ public class SignupActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (mobile.isEmpty() || mobile.length()!=10) {
-            _mobileText.setError("Enter Valid Mobile Number");
+        if (username.isEmpty() || username.length() < 3) {
+            _usernameText.setError("at least 3 characters");
             valid = false;
         } else {
-            _mobileText.setError(null);
+            _usernameText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 1 || password.length() > 20) {
