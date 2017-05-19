@@ -1,13 +1,25 @@
-package com.sourcey.materiallogindemo;
+package com.bernsinc.bringit;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import com.google.gson.Gson;
+import com.bernsinc.bringit.models.User;
+
+import butterknife.Bind;
 
 
 public class MainActivity extends ActionBarActivity {
+
+
+    @Bind(R.id.displayName)
+    EditText _displayNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +29,12 @@ public class MainActivity extends ActionBarActivity {
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+        try {
+            _displayNameText.setText(getUserInfo().getDisplayName());
+        } catch (Exception e) {
+            Log.v("mainactivity", e.toString());
+        }
+
     }
 
     @Override
@@ -39,5 +57,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected User getUserInfo() {
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("User", "");
+        User user = gson.fromJson(json, User.class);
+        return user;
     }
 }

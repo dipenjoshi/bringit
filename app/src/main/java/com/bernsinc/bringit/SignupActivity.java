@@ -1,4 +1,4 @@
-package com.sourcey.materiallogindemo;
+package com.bernsinc.bringit;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD:app/src/main/java/com/sourcey/materiallogindemo/SignupActivity.java
 import com.sourcey.materiallogindemo.models.SignInForm;
 import com.sourcey.materiallogindemo.models.SignUpForm;
 import com.sourcey.materiallogindemo.models.User;
@@ -52,7 +53,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -114,17 +115,6 @@ public class SignupActivity extends AppCompatActivity {
 
             }
         });
-
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        // On complete call either onSignupSuccess or onSignupFailed
-//                        // depending on success
-//                        onSignupSuccess();
-//                        // onSignupFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 3000);
     }
 
 

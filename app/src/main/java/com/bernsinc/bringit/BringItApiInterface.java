@@ -1,4 +1,4 @@
-package com.sourcey.materiallogindemo;
+package com.bernsinc.bringit;
 
 import com.sourcey.materiallogindemo.models.SignInForm;
 import com.sourcey.materiallogindemo.models.SignUpForm;
