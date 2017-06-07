@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         SignInForm form = new SignInForm();
         form.setUsername(_usernameText.getText().toString());
         form.setPassword(_passwordText.getText().toString());
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.1.43:3000/").addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.1.66:3000/").addConverterFactory(GsonConverterFactory.create()).build();
         BringItApiInterface apiService = retrofit.create(BringItApiInterface.class);
         Call<User> call = apiService.signIn(form);
         call.enqueue(new Callback<User>() {

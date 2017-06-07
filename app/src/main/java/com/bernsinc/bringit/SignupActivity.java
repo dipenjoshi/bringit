@@ -11,10 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< HEAD:app/src/main/java/com/sourcey/materiallogindemo/SignupActivity.java
-import com.sourcey.materiallogindemo.models.SignInForm;
-import com.sourcey.materiallogindemo.models.SignUpForm;
-import com.sourcey.materiallogindemo.models.User;
+import com.bernsinc.bringit.models.SignUpForm;
+import com.bernsinc.bringit.models.User;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -77,13 +75,6 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String firstName = _firstNameText.getText().toString();
-        String lastName = _lastNameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _usernameText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
-
         // TODO: Implement your own signup logic here.
         SignUpForm form = new SignUpForm();
         form.setUsername(_usernameText.getText().toString());
@@ -92,7 +83,7 @@ public class SignupActivity extends AppCompatActivity {
         form.setFirstName(_firstNameText.getText().toString());
         form.setLastName(_lastNameText.getText().toString());
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.1.43:3000/").addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.1.66:3000/").addConverterFactory(GsonConverterFactory.create()).build();
         BringItApiInterface apiService = retrofit.create(BringItApiInterface.class);
         Call<User> call = apiService.signUp(form);
         call.enqueue(new Callback<User>() {

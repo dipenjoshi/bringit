@@ -1,8 +1,8 @@
 package com.bernsinc.bringit;
 
-import com.sourcey.materiallogindemo.models.SignInForm;
-import com.sourcey.materiallogindemo.models.SignUpForm;
-import com.sourcey.materiallogindemo.models.User;
+import com.bernsinc.bringit.models.SignInForm;
+import com.bernsinc.bringit.models.SignUpForm;
+import com.bernsinc.bringit.models.User;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

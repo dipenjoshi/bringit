@@ -3,7 +3,7 @@ package com.bernsinc.bringit.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpForm {
+public class SignUpForm extends SignInForm {
     @SerializedName("firstName")
     @Expose
     private String firstName;
@@ -13,12 +13,6 @@ public class SignUpForm {
     @SerializedName("email")
     @Expose
     private String email;
-    @SerializedName("username")
-    @Expose
-    private String username;
-    @SerializedName("password")
-    @Expose
-    private String password;
 
     public String getFirstName() {
         return firstName;
@@ -44,19 +38,4 @@ public class SignUpForm {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
